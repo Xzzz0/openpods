@@ -1,0 +1,17 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [{ "Name": "OpenPods" }],
+        "Category": "System Information",
+        "Description": "AirPods: battery, noise control and OpenPods settings",
+        "Description[de]": "AirPods: Akku, Geräuschkontrolle und OpenPods-Einstellungen",
+        "Icon": "audio-headphones",
+        "Id": "org.openpods.applet",
+        "License": "GPL-3.0",
+        "Name": "OpenPods",
+        "Version": "1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "Hardware"
+}
