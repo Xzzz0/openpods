@@ -167,9 +167,13 @@ class Limiter:
 
 
 # ---------------------------------------------------------------------------------------------- pipewire glue
+# pactl/wpctl output is localized (e.g. "Aktives Profil", "Quellen-Eingabe"); the parsers expect English.
+C_ENV = {**os.environ, "LC_ALL": "C"}
+
+
 def _pactl(*args, timeout=4) -> str | None:
     try:
-        r = subprocess.run(["pactl", *args], capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(["pactl", *args], capture_output=True, text=True, timeout=timeout, env=C_ENV)
         return r.stdout if r.returncode == 0 else None
     except (OSError, subprocess.TimeoutExpired):
         return None
@@ -370,7 +374,7 @@ class HiResMic:
         capture_stream_links nil), every Bluetooth device vanishes and the AirPods come back in HFP -> loop."""
         try:
             out = subprocess.run(["wpctl", "settings", "bluetooth.autoswitch-to-headset-profile"],
-                                 capture_output=True, text=True, timeout=3).stdout
+                                 capture_output=True, text=True, timeout=3, env=C_ENV).stdout
             self._autoswitch_prev = "false" in out.lower()  # reported as hfpBlocked
             if not self._autoswitch_prev:
                 log.warning("WirePlumber headset autoswitch is on (config drop-in missing?) - not touching it at "
@@ -469,7 +473,7 @@ class HiResMic:
 
     def _subscribe_events(self):
         try:
-            p = subprocess.Popen(["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            p = subprocess.Popen(["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=C_ENV,
                                  text=True, bufsize=1)
         except OSError as e:
             log.warning("pactl subscribe failed: %s", e)

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import subprocess
 
@@ -18,7 +19,8 @@ PLAYER = "org.mpris.MediaPlayer2.Player"
 
 def _pactl(*args, timeout=3) -> str | None:
     try:
-        r = subprocess.run(["pactl", *args], capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(["pactl", *args], capture_output=True, text=True, timeout=timeout,
+                           env={**os.environ, "LC_ALL": "C"})
         return r.stdout if r.returncode == 0 else None
     except (OSError, subprocess.TimeoutExpired):
         return None
