@@ -6,6 +6,8 @@
       noise.cycle | noise.off | noise.nc | noise.transparency | noise.adaptive
       conversation.on | conversation.off
       connect [MAC] | disconnect [MAC] | connection.toggle
+  openpods update [--check]          install the latest release (git pull of its tag + install.sh)
+  openpods --version
 """
 from __future__ import annotations
 
@@ -45,6 +47,13 @@ def main(argv=None):
             return 1
         print(json.dumps(reply, indent=1, ensure_ascii=False))
         return 0 if "error" not in reply else 1
+    if argv and argv[0] == "update":
+        from . import updater
+        return updater.cli(argv[1:])
+    if "--version" in argv:
+        from . import __version__
+        print(f"OpenPods {__version__}")
+        return 0
     if "-h" in argv or "--help" in argv:
         print(__doc__)
         return 0

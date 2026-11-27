@@ -15,7 +15,7 @@ from gi.repository import GLib, Gtk  # noqa: E402
 
 import dbus  # noqa: E402
 
-from . import aap, models  # noqa: E402
+from . import __version__, aap, models, updater  # noqa: E402
 from .bluez import BlueZ  # noqa: E402
 from .ctl import ControlServer  # noqa: E402
 from .hires_mic import HiResMic  # noqa: E402
@@ -34,7 +34,7 @@ WEB = os.path.join(ROOT, "web")
 LOCALES = os.path.join(ROOT, "locales")
 ASSETS = os.path.join(ROOT, "assets")
 ICON = os.path.join(ASSETS, "openpods.png")
-VERSION = "0.4.4-linux1"
+VERSION = __version__
 SUPPORT_URL = "https://github.com/FPNDev/wpods#support-wpods"
 MAX_ATTACH_ATTEMPTS = 8
 POPUP_W = 380
@@ -47,6 +47,9 @@ CONNECT_RETRIES = 2            # extra Device.Connect attempts on transient Blue
 CONNECT_RETRY_DELAYS = (2, 4)
 A2DP_CHECK_AFTER_READY_S = 3
 LOW_BATTERY = 10
+UPDATE_FIRST_CHECK_S = 30
+UPDATE_INTERVAL_S = 6 * 3600
+UPDATE_GIVE_UP_S = 600  # an update that has not restarted OpenPods by then failed
 STEM_BIT = {name: bit for bit, name in STEM_ORDER}
 
 
@@ -128,6 +131,15 @@ class App:
         self._on_devices()
         self.ctl = ControlServer(self.command)
         GLib.timeout_add_seconds(3, self._tick)
+        self.update_info: dict | None = None
+        self.update_status = "idle"
+        self.update_checked = False
+        self._update_timeout = 0
+        self._startup_update_check = True  # "update automatically" installs what the first check after a start finds
+        self.update_checker = updater.Checker(self._on_update_result)
+        GLib.timeout_add_seconds(UPDATE_FIRST_CHECK_S, lambda: (self.update_checker.check(), False)[1])
+        GLib.timeout_add_seconds(UPDATE_INTERVAL_S, lambda: (self.update_checker.check(), True)[1])
+        self._note_updated()
         if not start_hidden or not self.settings.ui.get("firstRunDone"):
             self.show_main()
 
@@ -448,8 +460,7 @@ class App:
                **self._prefs(), "visible": self.main.shown,
                "startup": Settings.startup_enabled(), "firstRun": not self.settings.ui.get("firstRunDone"),
                "adapterUnsupported": False, "restartPending": False,
-               "update": {"version": VERSION, "available": None, "status": "idle", "checked": True, "auto": False,
-                          "dismissed": None},
+               "update": self._update_msg(),
                "devices": devs["devices"], "attached": devs["attached"], "selected": selected,
                "state": self._state_json(), "mic": "unsupported",
                "micCatalog": {"standard": [], "voiceIsolation": [], "wideSpectrum": [], "enhancement": []},
@@ -609,6 +620,22 @@ class App:
             self.bluez.refresh()
         elif t == "openSupport":
             self._open(SUPPORT_URL)
+        elif t == "checkUpdate":
+            self.update_status = "checking"
+            self._send_update()
+            self.update_checker.check()
+        elif t == "updateNow":
+            self.install_update()
+        elif t == "dismissUpdate":
+            self.settings.ui["updateDismissed"] = self._update_available()
+            self.settings.save()
+            self._send_update()
+        elif t == "openReleaseNotes":
+            self._open((self.update_info or {}).get("url") or updater.RELEASES_URL)
+        elif t == "setAutoUpdate":
+            self.settings.ui["autoUpdate"] = bool(m.get("value"))
+            self.settings.save()
+            self._send_update()
         elif t == "getStarted":
             self.settings.ui["firstRunDone"] = True
             self.settings.save()
@@ -901,7 +928,9 @@ class App:
                "prefs": {"startup": Settings.startup_enabled(), "popup": bool(self.settings.ui.get("popup", True)),
                          "autoConnect": bool(self.settings.ui.get("autoConnectInEar", True)),
                          "hdMic": self.hd_mic.enabled, "theme": self.settings.ui.get("theme", "auto")},
-               "mic": {"streaming": self.hd_mic.streaming, "recorders": self.hd_mic.recorders}}
+               "mic": {"streaming": self.hd_mic.streaming, "recorders": self.hd_mic.recorders},
+               "update": {"version": VERSION, "available": self._update_available(),
+                          "installing": self.update_status == "installing"}}
         order = ("noiseCancellation", "adaptive", "transparency", "off")  # the slider runs quiet -> open
         if ready:
             p = self._state_parts(s)
@@ -980,6 +1009,10 @@ class App:
                                                    None, None, None, None, None)
         elif t == "quit":
             GLib.idle_add(self.quit)
+        elif t == "update":
+            if not self._update_available():
+                return {"error": "no update"}
+            self.install_update()
         elif t in ("setListeningMode", "setToggle") and not s:
             return {"error": "not connected"}
         else:
@@ -998,6 +1031,77 @@ class App:
 
     def _build_tray_menu(self):
         pass
+
+    # ------------------------------------------------------------------ updates
+    def _update_available(self) -> str | None:
+        v = (self.update_info or {}).get("version")
+        return v if v and updater.is_newer(v) else None
+
+    def _update_msg(self) -> dict:
+        return {"version": VERSION, "available": self._update_available(), "status": self.update_status,
+                "checked": self.update_checked, "auto": bool(self.settings.ui.get("autoUpdate", False)),
+                "dismissed": self.settings.ui.get("updateDismissed")}
+
+    def _send_update(self):
+        self._send("update", {"type": "update", "update": self._update_msg()})
+        self._schedule_flush()
+
+    def _on_update_result(self, info):
+        self.update_checked = True
+        if self.update_status == "checking":
+            self.update_status = "idle"
+        if info:
+            self.update_info = info
+        new = self._update_available()
+        at_start, self._startup_update_check = self._startup_update_check, False
+        if new:
+            log.info("update available: %s -> %s", VERSION, new)
+            if self.settings.ui.get("autoUpdate") and at_start:
+                self.install_update()
+            elif self.settings.ui.get("updateNotified") != new:
+                self.settings.ui["updateNotified"] = new
+                self.settings.save()
+                self.notify(self.text("update.title"), self.text("update.available", version=new), replace=False)
+        self._send_update()
+
+    def install_update(self):
+        if self.update_status == "installing":
+            return
+        if not self._update_available():
+            self.update_checker.check()
+            return
+        log.info("installing update %s", self._update_available())
+        if not updater.start_background_update():
+            self._update_failed("start")
+            return
+        self.update_status = "installing"
+        if self._update_timeout:
+            GLib.source_remove(self._update_timeout)
+        self._update_timeout = GLib.timeout_add_seconds(UPDATE_GIVE_UP_S, lambda: (self._update_failed("timeout"),
+                                                                                    False)[1])
+        self._send_update()
+
+    def _update_failed(self, code):
+        log.warning("update failed (%s), see %s", code, updater.UPDATE_LOG)
+        if self._update_timeout:
+            GLib.source_remove(self._update_timeout)
+            self._update_timeout = 0
+        self.update_status = "idle"
+        self._toast("updateFailed", code=str(code))
+        self.notify(self.text("update.title"), self.text("toast.updateFailed", code=code), replace=False)
+        self._send_update()
+
+    def _note_updated(self):
+        """First start after an update: say so once."""
+        last = self.settings.ui.get("lastVersion")
+        if last != VERSION:
+            self.settings.ui["lastVersion"] = VERSION
+            self.settings.save()
+            if last and updater.is_newer(VERSION, last):
+                log.info("updated %s -> %s", last, VERSION)
+                GLib.timeout_add_seconds(3, lambda: (self.notify(self.text("update.version", version=VERSION),
+                                                                 self.text("update.upToDate"), replace=False),
+                                                     False)[1])
 
     # ------------------------------------------------------------------ notifications
     def notify(self, title, body, replace=True):
@@ -1058,6 +1162,16 @@ class App:
             return self._main_init()
         elif cmd == "applet":
             return self._applet_json()
+        elif cmd == "debug.update":
+            # Debug: pretend that release `arg` exists (UI/applet check without publishing a release).
+            self.update_info = {"version": (arg or "99.0.0").lstrip("v"), "url": updater.RELEASES_URL}
+            self.update_checked = True
+            self._send_update()
+        elif cmd == "update.check":
+            self.update_checker.check()
+        elif cmd == "update.failed":
+            # sent by `openpods update` when it stops before reinstalling (this process then keeps running)
+            self._update_failed(arg or "?")
         elif cmd == "applet.do" and arg:
             # The Plasma applet (plasmoid/) drives OpenPods with the same messages as the page.
             try:

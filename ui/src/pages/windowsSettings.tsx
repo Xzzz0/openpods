@@ -249,12 +249,12 @@ export const createWindowsSettings = (ctx: Ctx): Page => {
   ) as HTMLDivElement;
 
   if (LINUX) {
-    // Hands-Free / low latency / HD voice, mic modes, mixer, hotkeys and updates are Windows-only.
+    // Hands-Free / low latency / HD voice, mic modes, mixer and hotkeys are Windows-only.
+    // Updates come from GitHub releases (openpods/updater.py).
     setHidden(el.firstElementChild as HTMLElement, true);
     setHidden(toMicModes, true);
     setHidden(toMixer, true);
     setHidden(toHotkeys, true);
-    setHidden(el.lastElementChild as HTMLElement, true);
   }
 
   const renderHost = (row: SwitchRow, on: boolean, locked: boolean): void => {

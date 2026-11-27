@@ -128,3 +128,12 @@ msgstr "Beim Öffnen des Case"
 
 msgid "Window when AirPods are nearby"
 msgstr "Fenster, wenn AirPods in der Nähe sind"
+
+msgid "Installing OpenPods %1…"
+msgstr "OpenPods %1 wird installiert …"
+
+msgid "OpenPods %1 is available"
+msgstr "OpenPods %1 ist verfügbar"
+
+msgid "Update"
+msgstr "Aktualisieren"

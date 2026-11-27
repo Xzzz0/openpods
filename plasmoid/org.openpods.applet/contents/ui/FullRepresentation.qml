@@ -49,6 +49,27 @@ PlasmaExtras.Representation {
             width: scroll.availableWidth
             spacing: Kirigami.Units.smallSpacing
 
+            // ---------------------------------------------------------- update (GitHub release, openpods/updater.py)
+            Kirigami.InlineMessage {
+                id: updateNote
+                readonly property var info: full.st && full.st.update ? full.st.update : ({})
+                Layout.fillWidth: true
+                Layout.margins: Kirigami.Units.smallSpacing
+                visible: !!info.available
+                type: Kirigami.MessageType.Positive
+                icon.name: "update-none"
+                text: info.installing ? i18n("Installing OpenPods %1…", info.available)
+                                      : i18n("OpenPods %1 is available", info.available)
+                actions: [
+                    Kirigami.Action {
+                        text: i18n("Update")
+                        icon.name: "download"
+                        enabled: !updateNote.info.installing
+                        onTriggered: full.applet.act({ type: "update" })
+                    }
+                ]
+            }
+
             // ---------------------------------------------------------- device
             RowLayout {
                 Layout.fillWidth: true
