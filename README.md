@@ -39,6 +39,21 @@ Recommended for the HD mic: turn off WirePlumber's automatic HFP switch statical
 `wireplumber.settings = { bluetooth.autoswitch-to-headset-profile = false }`; `install.sh` does this). Do **not**
 toggle it at runtime with `wpctl settings` – WirePlumber 0.5.18 crashes when you do.
 
+## Updates
+OpenPods checks GitHub for a new release (shortly after starting, then every 6 hours) and shows a notification, a
+note in the app and an "Update" button in the applet. Updating fast-forwards this checkout to the release tag and
+runs `install.sh` again; settings are kept.
+```sh
+openpods update --check   # is there a newer release?
+openpods update           # install it (from a terminal: also installs new packages)
+openpods --version
+```
+"Update automatically" (app → Linux settings → Updates) installs a new release at the next start of OpenPods.
+Only releases are installed, never unreleased commits on `main`. Log: `~/.local/state/openpods/update.log`.
+
+Publishing a release (maintainers): `tools/release.sh X.Y.Z [notes.md]` bumps `openpods/__init__.py` through a pull
+request, tags `vX.Y.Z` and creates the GitHub release.
+
 ## Command line / keyboard shortcuts
 ```sh
 openpods ctl noise.cycle            # cycle the listening modes (the ones chosen under "press and hold")
@@ -46,6 +61,7 @@ openpods ctl noise.nc | noise.transparency | noise.adaptive | noise.off
 openpods ctl conversation.on|off
 openpods ctl connect | disconnect | connection.toggle
 openpods ctl toggle | show | status | quit
+openpods ctl update.check
 ```
 In KDE: System Settings → Shortcuts → New → Command.
 

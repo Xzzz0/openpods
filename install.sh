@@ -159,16 +159,21 @@ fi
 RUNNING=0
 if [ -x "$HOME/.local/bin/openpods" ] && "$HOME/.local/bin/openpods" ctl status >/dev/null 2>&1; then
   RUNNING=1
+  # if anything below fails, do not leave the user without OpenPods
+  trap '[ $? -ne 0 ] && setsid -f "$HOME/.local/bin/openpods" --hidden >/dev/null 2>&1' EXIT
   "$HOME/.local/bin/openpods" ctl quit >/dev/null 2>&1 || true
   for _ in $(seq 1 20); do "$HOME/.local/bin/openpods" ctl status >/dev/null 2>&1 || break; sleep 0.25; done
 fi
 APPLET_DIR="$HOME/.local/share/plasma/plasmoids/org.openpods.applet"
-APPLET_WAS_THERE=0; [ -d "$APPLET_DIR" ] && APPLET_WAS_THERE=1
+APPLET_CHANGED=0
+if [ -d "$APPLET_DIR" ] && ! diff -rq "$HERE/plasmoid/org.openpods.applet" "$APPLET_DIR" >/dev/null 2>&1; then
+  APPLET_CHANGED=1
+fi
 user_install >/dev/null 2>&1
 ok "openpods command, app menu entry, icon"
 if have plasmashell && have kpackagetool6; then
-  if [ "$APPLET_WAS_THERE" -eq 1 ] && have systemctl; then
-    # Plasma caches the old QML: restart the shell, then put the applet back into the system tray
+  if [ "$APPLET_CHANGED" -eq 1 ] && have systemctl; then
+    # Plasma caches the old QML: restart the shell (only when the applet changed), then put it back into the tray
     systemctl --user restart plasma-plasmashell 2>/dev/null && sleep 6 && user_install >/dev/null 2>&1 || true
   fi
   ok "KDE applet in the system tray (tray arrow → OpenPods)"
