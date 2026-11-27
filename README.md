@@ -1,62 +1,67 @@
 # OpenPods
 
-AirPods-Steuerung für Linux – ein Weiterentwicklung von [WPods](https://github.com/FPNDev/wpods) (GPL-3.0, © fpndev).
-Die Oberfläche ist die originale WPods-Web-UI (TypeScript), das Backend wurde in Python neu geschrieben:
-statt Windows-Dienst + USB-IP-Trick spricht OpenPods das AirPods-Protokoll (AAP) direkt über BlueZ (L2CAP PSM 0x1001).
+AirPods controls for Linux – a continuation of [WPods](https://github.com/FPNDev/wpods) (GPL-3.0, © fpndev).
+The UI is the original WPods web UI (TypeScript); the backend was rewritten in Python: instead of a Windows service
+plus a USB/IP trick, OpenPods speaks the AirPods protocol (AAP) directly over BlueZ (L2CAP PSM 0x1001).
 
-## Funktionen
-- Akku links/rechts/Case (+ Laden), Ohrerkennung (In Ear / Raus / Im Case)
-- Hörmodus: Aus, Transparenz, Adaptiv, Geräuschunterdrückung; ANC mit einem AirPod; „Aus“ erlauben
-- Gesprächserkennung (inkl. Lautstärke absenken auf dem PC, „Medien absenken auf“), Personalisierte Lautstärke
-- Steuerung: Drückgeschwindigkeit, Drück-und-halten-Dauer, Modi-Zyklus beim Halten, Ton-Lautstärke, Mikrofonseite
-- Hörhilfe / Medienunterstützung (Pro 2/3), Herzfrequenz (Pro 3)
-- Ohrerkennung pausiert/fortsetzt Medien (MPRIS: Spotify, Browser, mpv …)
-- Nearby-Popup wie am iPhone (Case öffnen → Akku + „Verbinden“, öffnet auf dem primären Monitor), braucht einmal eine
-  Verbindung (Schlüssel); **verbindet automatisch**, sobald die AirPods aus dem Case ins Ohr kommen
-- **HD-Mikrofon**: Apples AAC-ELD-Mikrostream (64 kHz) über AAP statt HFP – Musik bleibt dabei in AAC-Qualität;
-  virtuelle Quelle „AirPods Mikro (HD)“ (libfdk-aac)
-- Hält die AirPods auf A2DP/AAC (kein „schleimiger“ HFP-Mono-Ton nach Handoff), robustes Verbinden mit Wiederholung
-- **KDE-Plasma-Applet** im Systemabschnitt (wie KDE Connect/Tresore): Akku, Hörmodus-Schieberegler, Schalter;
-  Benachrichtigung bei schwachem Akku
-- Oberfläche im Material-3-Expressive-Stil, 45 Sprachen, Hell/Dunkel/Auto
+## Features
+- Battery for left/right/case (+ charging), ear detection (in ear / out / in case)
+- Listening mode: off, transparency, adaptive, noise cancellation; ANC with one AirPod; allow "off"
+- Conversation awareness (including lowering the volume on the PC, "lower media to"), personalized volume
+- Controls: press speed, press-and-hold duration, modes cycled on hold, tone volume, microphone side
+- Hearing aid / media assist (Pro 2/3), heart rate (Pro 3)
+- Ear detection pauses/resumes media (MPRIS: Spotify, browsers, mpv …)
+- iPhone-style nearby popup (open the case → battery + "Connect", shown on the primary monitor); needs one
+  connection first (for the keys); **connects automatically** as soon as the AirPods go from the case into your ears
+- **HD microphone**: Apple's AAC-ELD mic stream (64 kHz) over AAP instead of HFP – music stays in AAC quality;
+  virtual source "AirPods Mic (HD)" (libfdk-aac)
+- Keeps the AirPods on A2DP/AAC (no muffled HFP mono sound after a handoff), robust connecting with retries
+- **KDE Plasma applet** in the system tray (like KDE Connect/Vaults): battery, listening-mode slider, switches;
+  notification on low battery
+- Material 3 Expressive UI, 45 languages, light/dark/auto
 
-Nicht portiert (Windows-spezifisch): Stereo-Mikro-Trick, Mikro-Modi/KI-Rauschunterdrückung, Mixer, Low-Latency,
-HD-Voice, globale Hotkeys (→ stattdessen `openpods ctl …` als KDE-Kurzbefehl), Auto-Update.
+Not ported (Windows-specific): stereo mic trick, mic modes/AI noise suppression, mixer, low latency, HD voice,
+global hotkeys (→ use `openpods ctl …` as a KDE shortcut instead), auto-update.
 
-## Installieren / Starten
+## Install / run
 ```sh
-./install.sh          # richtet alles ein: Pakete, UI, Befehl openpods, Startmenü, KDE-Applet, Audio, Autostart
-openpods               # startet (oder zeigt das laufende Fenster)
-openpods --hidden      # ohne Fenster (Steuerung über das Plasma-Applet)
+./install.sh          # sets up everything: packages, UI, openpods command, app menu, KDE applet, audio, autostart
+openpods              # starts (or shows the running window)
+openpods --hidden     # without a window (control it from the Plasma applet)
 ```
-Benötigt: Python 3, python-gobject, webkit2gtk-4.1, python-dbus, python-cryptography, python-numpy, libfdk-aac
-(HD-Mikro), BlueZ, PipeWire (`pactl`, `wpctl`), Node.js zum Bauen der UI (`install.sh` baut sie beim ersten Mal).
-KDE Plasma 6 für das Applet (`install.sh` installiert es und trägt es in den Systemabschnitt ein).
+Requires: Python 3, python-gobject, webkit2gtk-4.1, python-dbus, python-cryptography, python-numpy, libfdk-aac
+(HD mic), BlueZ, PipeWire (`pactl`, `wpctl`), Node.js to build the UI (`install.sh` builds it on the first run).
+KDE Plasma 6 for the applet (`install.sh` installs it and adds it to the system tray).
+`install.sh` is tested on Arch/Manjaro; the Debian/Ubuntu and Fedora package lists are a best guess.
 
-Empfohlen fürs HD-Mikro: WirePlumbers automatischen HFP-Wechsel statisch abschalten
-(`~/.config/wireplumber/wireplumber.conf.d/51-openpods-no-hfp-autoswitch.conf` mit
-`wireplumber.settings = { bluetooth.autoswitch-to-headset-profile = false }`). **Nicht** zur Laufzeit per
-`wpctl settings` umschalten – WirePlumber 0.5.18 stürzt dabei ab.
+Recommended for the HD mic: turn off WirePlumber's automatic HFP switch statically
+(`~/.config/wireplumber/wireplumber.conf.d/51-openpods-no-hfp-autoswitch.conf` with
+`wireplumber.settings = { bluetooth.autoswitch-to-headset-profile = false }`; `install.sh` does this). Do **not**
+toggle it at runtime with `wpctl settings` – WirePlumber 0.5.18 crashes when you do.
 
-## Steuern per Kommandozeile / Tastenkürzel
+## Command line / keyboard shortcuts
 ```sh
-openpods ctl noise.cycle            # Hörmodus durchschalten (Modi aus „Drücken und halten“)
+openpods ctl noise.cycle            # cycle the listening modes (the ones chosen under "press and hold")
 openpods ctl noise.nc | noise.transparency | noise.adaptive | noise.off
 openpods ctl conversation.on|off
 openpods ctl connect | disconnect | connection.toggle
 openpods ctl toggle | show | status | quit
 ```
-In KDE: Systemeinstellungen → Kurzbefehle → Neu → Befehl.
+In KDE: System Settings → Shortcuts → New → Command.
 
-## Dateien
-- Einstellungen: `~/.config/openpods/settings.json` · Log: `~/.local/state/openpods/openpods.log` (`--debug` für Pakete)
-- Code: `openpods/` (aap.py Protokoll, session.py L2CAP-Sitzung, app.py Steuerung, bluez.py, nearby.py, media.py,
-  hires_mic.py HD-Mikro, ui.py, ctl.py Steuer-Socket)
-- UI-Quelle: `ui/` (WPods-UI + `src/platform.ts`-Anpassungen), gebaut nach `web/` (nicht im Repo)
-- Plasma-Applet: `plasmoid/org.openpods.applet/`
-- UI-Vorschau ohne Bildschirm: `tools/ui-preview/`
+## Files
+- Settings: `~/.config/openpods/settings.json` · log: `~/.local/state/openpods/openpods.log` (`--debug` for packets)
+- Code: `openpods/` (aap.py protocol, session.py L2CAP session, app.py control, bluez.py, nearby.py, media.py,
+  hires_mic.py HD mic, ui.py, ctl.py control socket)
+- UI source: `ui/` (WPods UI + `src/platform.ts` adaptations), built into `web/` (not in the repo)
+- Plasma applet: `plasmoid/org.openpods.applet/`; its translations: `plasmoid/translations/*.po`, compiled into
+  `contents/locale/<lang>/LC_MESSAGES/plasma_applet_org.openpods.applet.mo` (`msgfmt`)
+- Headless UI preview: `tools/ui-preview/`
 
-## Lizenzen
-OpenPods: GPL-3.0 (wie WPods, siehe `LICENSE`, `THIRD-PARTY-NOTICES.txt`). Schriften in `assets/fonts/`:
+## Contributing
+`main` only takes changes through pull requests.
+
+## Licenses
+OpenPods: GPL-3.0 (like WPods, see `LICENSE`, `THIRD-PARTY-NOTICES.txt`). Fonts in `assets/fonts/`:
 Google Sans Flex (SIL OFL 1.1, `GoogleSansFlex-OFL.txt`), Material Symbols Rounded (Apache-2.0, Google).
-Nicht mit Apple verbunden; AirPods ist eine Marke der Apple Inc.
+Not affiliated with Apple; AirPods is a trademark of Apple Inc.

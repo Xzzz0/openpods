@@ -5,7 +5,7 @@ L2CAP channel (PSM 0x1001) OpenPods already holds. A2DP playback keeps running i
 and mic work together. Protocol as reverse-engineered by LibrePods (PR #655) and airpods-linux.
 
 Pipeline: AAP 0x58 SDU -> AU demux -> libfdk-aac (ctypes) -> limiter -> FIFO -> PipeWire module-pipe-source
-"AirPods Mikro (HD)". The stream only runs while an application records from that source.
+"AirPods Mic (HD)". The stream only runs while an application records from that source.
 
 Threads: Session reader thread calls feed(); a decode thread drains the queue; everything else on the GLib main thread.
 """
@@ -32,7 +32,7 @@ A2DP_SINK_UUID = "0000110b-0000-1000-8000-00805f9b34fb"
 A2DP_RETRY_S = 10.0
 RESET_MIN_INTERVAL_S = 60.0
 START_GRACE_S = 2.5  # after the session is ready, give A2DP time before the first 0x58 START
-SOURCE_DESC = "AirPods Mikro (HD)"
+SOURCE_DESC = "AirPods Mic (HD)"
 RATE = 64000
 FRAME = 480                      # samples per AAC-ELD access unit (7.5 ms)
 ELD_ASC = bytes([0xF8, 0xE6, 0x30, 0x00])  # AOT 39 (ELD), mono, 480-sample frames
