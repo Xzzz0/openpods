@@ -46,16 +46,45 @@ user_install() {
   } > "$HOME/.local/share/applications/openpods.desktop"
   update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
   # KDE: OpenPods as a native applet in the system tray ("Status and Notifications")
+  APPLET_IN_TRAY=0
   if command -v kpackagetool6 >/dev/null 2>&1; then
     kpackagetool6 -t Plasma/Applet -u "$HERE/plasmoid/org.openpods.applet" >/dev/null 2>&1 \
       || kpackagetool6 -t Plasma/Applet -i "$HERE/plasmoid/org.openpods.applet"
-    qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
+    local out
+    out="$(plasma_eval '
+      var n = 0;
       panels().forEach(function (p) { p.widgets("org.kde.plasma.systemtray").forEach(function (w) {
         w.currentConfigGroup = ["General"];
         ["extraItems", "knownItems"].forEach(function (k) { var i = w.readConfig(k);
           if (typeof i === "string") i = i.split(",");
           if (i.indexOf("org.openpods.applet") < 0) i.push("org.openpods.applet"); w.writeConfig(k, i); });
-        w.reloadConfig(); }); });' >/dev/null 2>&1 || true
+        w.reloadConfig(); n++; }); });
+      print("trays:" + n);' || true)"
+    case "$out" in *trays:[1-9]*) APPLET_IN_TRAY=1 ;; esac
+  fi
+  return 0
+}
+
+# Plasma's scripting API over D-Bus. qdbus is named differently on every distro (qdbus6, qdbus-qt6, …),
+# gdbus (GLib, needed by PyGObject anyway) is the fallback. Prints what the script print()s.
+plasma_eval() {
+  local q
+  for q in qdbus6 qdbus-qt6 /usr/lib/qt6/bin/qdbus /usr/lib64/qt6/bin/qdbus; do
+    if have "$q"; then "$q" org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$1" 2>/dev/null; return; fi
+  done
+  have gdbus && gdbus call --session --dest org.kde.plasmashell --object-path /PlasmaShell \
+    --method org.kde.PlasmaShell.evaluateScript "$1" 2>/dev/null
+}
+
+# Plasma caches an applet's old QML, so an updated applet needs a fresh shell
+restart_plasma() {
+  if have systemctl && systemctl --user is-active --quiet plasma-plasmashell 2>/dev/null; then
+    systemctl --user restart plasma-plasmashell
+  elif have kquitapp6; then  # Plasma not started through systemd (e.g. some distros / custom sessions)
+    kquitapp6 plasmashell >/dev/null 2>&1 || true
+    setsid -f plasmashell >/dev/null 2>&1
+  else
+    return 1
   fi
 }
 
@@ -172,11 +201,18 @@ fi
 user_install >/dev/null 2>&1
 ok "openpods command, app menu entry, icon"
 if have plasmashell && have kpackagetool6; then
-  if [ "$APPLET_CHANGED" -eq 1 ] && have systemctl; then
-    # Plasma caches the old QML: restart the shell (only when the applet changed), then put it back into the tray
-    systemctl --user restart plasma-plasmashell 2>/dev/null && sleep 6 && user_install >/dev/null 2>&1 || true
+  if [ "$APPLET_CHANGED" -eq 1 ]; then
+    # restart the shell (only when the applet changed), then put the applet back into the tray
+    restart_plasma && sleep 6 && user_install >/dev/null 2>&1 || true
   fi
-  ok "KDE applet in the system tray (tray arrow → OpenPods)"
+  if [ "$APPLET_IN_TRAY" -eq 1 ]; then
+    ok "KDE applet in the system tray (tray arrow → OpenPods)"
+  else
+    warn "KDE applet installed, but it could not be added to the system tray automatically:"
+    warn "right-click the tray arrow → Configure System Tray → Entries → OpenPods → Always shown"
+  fi
+elif have plasmashell; then
+  warn "The KDE applet needs Plasma 6 (kpackagetool6 not found) – OpenPods itself works, open it from the app menu"
 fi
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) warn "~/.local/bin is not in PATH – start with ~/.local/bin/openpods" ;; esac
 
