@@ -1,0 +1,130 @@
+# German translation of the OpenPods applet.
+# Rebuild: msgfmt -o org.openpods.applet/contents/locale/de/LC_MESSAGES/plasma_applet_org.openpods.applet.mo translations/de.po
+msgid ""
+msgstr ""
+"Project-Id-Version: openpods-applet\n"
+"PO-Revision-Date: 2026-11-27\n"
+"Last-Translator: OpenPods\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Active · %1"
+msgstr "Aktiv · %1"
+
+msgid "Adaptive"
+msgstr "Adaptiv"
+
+msgid "AirPods"
+msgstr "AirPods"
+
+msgid "As soon as the AirPods go from the case into your ears"
+msgstr "Sobald die AirPods aus dem Case ins Ohr kommen"
+
+msgid "Automatic Ear Detection"
+msgstr "Automatische Ohrerkennung"
+
+msgid "Battery"
+msgstr "Akku"
+
+msgid "Case"
+msgstr "Case"
+
+msgid "Connect"
+msgstr "Verbinden"
+
+msgid "Connect automatically"
+msgstr "Automatisch verbinden"
+
+msgid "Connect the AirPods to change the mode"
+msgstr "Verbinde die AirPods, um den Modus zu ändern"
+
+msgid "Connected"
+msgstr "Verbunden"
+
+msgid "Connected to another device"
+msgstr "Mit anderem Gerät verbunden"
+
+msgid "Connecting…"
+msgstr "Wird verbunden …"
+
+msgid "Controls unavailable – connect again"
+msgstr "Steuerung nicht erreichbar – erneut verbinden"
+
+msgid "Conversation Awareness"
+msgstr "Gesprächserkennung"
+
+msgid "Disconnect"
+msgstr "Trennen"
+
+msgid "From the case nearby"
+msgstr "Vom Case in der Nähe"
+
+msgid "General"
+msgstr "Allgemein"
+
+msgid "HD Microphone"
+msgstr "HD-Mikrofon"
+
+msgid "High-quality AirPods mic, music stays AAC"
+msgstr "AirPods-Mikro in hoher Qualität, Musik bleibt AAC"
+
+msgid "L"
+msgstr "L"
+
+msgid "Last seen %1 min ago"
+msgstr "Zuletzt gesehen vor %1 min"
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Lowers media when you speak"
+msgstr "Medien leiser, wenn du sprichst"
+
+msgid "No AirPods paired"
+msgstr "Keine AirPods gekoppelt"
+
+msgid "Noise Control"
+msgstr "Geräuschkontrolle"
+
+msgid "Not connected"
+msgstr "Nicht verbunden"
+
+msgid "Off"
+msgstr "Aus"
+
+msgid "Open OpenPods"
+msgstr "OpenPods öffnen"
+
+msgid "OpenPods is not running"
+msgstr "OpenPods läuft nicht"
+
+msgid "Pauses when you take out an AirPod"
+msgstr "Pausiert, wenn du einen AirPod herausnimmst"
+
+msgid "R"
+msgstr "R"
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Set up OpenPods…"
+msgstr "OpenPods einrichten …"
+
+msgid "Start OpenPods"
+msgstr "OpenPods starten"
+
+msgid "Start with Linux"
+msgstr "Mit Linux starten"
+
+msgid "Transparency"
+msgstr "Transparenz"
+
+msgid "When the case is opened"
+msgstr "Beim Öffnen des Case"
+
+msgid "Window when AirPods are nearby"
+msgstr "Fenster, wenn AirPods in der Nähe sind"

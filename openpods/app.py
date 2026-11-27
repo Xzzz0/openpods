@@ -38,7 +38,7 @@ VERSION = "0.4.4-linux1"
 SUPPORT_URL = "https://github.com/FPNDev/wpods#support-wpods"
 MAX_ATTACH_ATTEMPTS = 8
 POPUP_W = 380
-POPUP_TITLE = "OpenPods – AirPods in der Nähe"
+POPUP_TITLE = "OpenPods – AirPods nearby"
 # Handoff (phone -> PC): when the link comes up, the AirPods still negotiate A2DP/HFP for a moment. Opening AAP and
 # starting the HD mic in that window made them refuse A2DP (-> mono HFP "slime" sound) or drop the link.
 SETTLE_AFTER_RESOLVED_S = 1.0  # wait this long after BlueZ reports ServicesResolved
@@ -838,7 +838,7 @@ class App:
         rc = "kwinrulesrc"
         grp = "openpods-popup"
         try:
-            for key, val in (("Description", "OpenPods: Popup auf dem primären Monitor"), ("title", POPUP_TITLE),
+            for key, val in (("Description", "OpenPods: popup on the primary monitor"), ("title", POPUP_TITLE),
                              ("titlematch", "1"), ("wmclass", "openpods"), ("wmclassmatch", "1"),
                              ("position", pos), ("positionrule", "2")):
                 subprocess.run(["kwriteconfig6", "--file", rc, "--group", grp, "--key", key, val], timeout=3)
@@ -989,7 +989,7 @@ class App:
 
     # ------------------------------------------------------------------ tray
     # The old AppIndicator tray icon is gone: OpenPods lives in KDE's system tray as a native Plasma applet
-    # (plasmoid/, "Status und Benachrichtigungen"), which talks to this process via `openpods ctl applet`.
+    # (plasmoid/, "Status and Notifications"), which talks to this process via `openpods ctl applet`.
     def _build_tray(self):
         pass
 

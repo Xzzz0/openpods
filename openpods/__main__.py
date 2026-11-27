@@ -41,7 +41,7 @@ def main(argv=None):
             return 2
         reply = ctl.send(argv[1], argv[2] if len(argv) > 2 else None)
         if reply is None:
-            print("OpenPods läuft nicht.", file=sys.stderr)
+            print("OpenPods is not running.", file=sys.stderr)
             return 1
         print(json.dumps(reply, indent=1, ensure_ascii=False))
         return 0 if "error" not in reply else 1
@@ -50,7 +50,7 @@ def main(argv=None):
         return 0
     hidden = "--hidden" in argv
     if ctl.send("show" if not hidden else "status") is not None:
-        print("OpenPods läuft schon" + ("" if hidden else " – Fenster wird gezeigt") + ".")
+        print("OpenPods is already running" + ("" if hidden else " - showing its window") + ".")
         return 0
     _setup_logging("--debug" in argv)
     import dbus.mainloop.glib

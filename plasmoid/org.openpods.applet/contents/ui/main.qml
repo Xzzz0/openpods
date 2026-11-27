@@ -1,5 +1,5 @@
 /*
- * OpenPods in KDE's system tray ("Status und Benachrichtigungen"), next to Vaults, KDE Connect & co.
+ * OpenPods in KDE's system tray ("Status and Notifications"), next to Vaults, KDE Connect & co.
  * Talks to the running OpenPods through its control socket: `openpods ctl applet` (state) and
  * `openpods ctl applet.do '<json>'` (actions), via Plasma's executable data engine.
  */
@@ -39,10 +39,10 @@ PlasmoidItem {
     Plasmoid.title: "OpenPods"
     Plasmoid.status: connected ? PlasmaCore.Types.ActiveStatus : PlasmaCore.Types.PassiveStatus
     toolTipMainText: device ? device.name : "OpenPods"
-    toolTipSubText: !st ? i18n("OpenPods läuft nicht")
+    toolTipSubText: !st ? i18n("OpenPods is not running")
                   : connected ? batteryText
-                  : device && device.conn === "connecting" ? i18n("Wird verbunden …")
-                  : i18n("Nicht verbunden")
+                  : device && device.conn === "connecting" ? i18n("Connecting…")
+                  : i18n("Not connected")
 
     switchWidth: Kirigami.Units.gridUnit * 14
     switchHeight: Kirigami.Units.gridUnit * 12
@@ -116,13 +116,13 @@ PlasmoidItem {
 
     PlasmaCore.Action {
         id: openAction
-        text: i18n("OpenPods öffnen")
+        text: i18n("Open OpenPods")
         icon.name: "window-new"
         onTriggered: root.act({ type: "open" })
     }
     PlasmaCore.Action {
         id: configureAction
-        text: i18n("OpenPods einrichten …")
+        text: i18n("Set up OpenPods…")
         icon.name: "configure"
         onTriggered: root.act({ type: "open", page: "windows" })
     }

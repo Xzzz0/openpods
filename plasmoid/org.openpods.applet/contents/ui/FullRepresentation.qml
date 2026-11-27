@@ -22,7 +22,7 @@ PlasmaExtras.Representation {
     Layout.preferredWidth: Kirigami.Units.gridUnit * 20
     Layout.preferredHeight: Kirigami.Units.gridUnit * 24
 
-    // no own header: the system tray already shows the title plus "OpenPods öffnen" / "Einrichten" (main.qml actions)
+    // no own header: the system tray already shows the title plus "Open OpenPods" / "Set up" (main.qml actions)
 
     // --- OpenPods not running
     PlasmaExtras.PlaceholderMessage {
@@ -30,9 +30,9 @@ PlasmaExtras.Representation {
         width: parent.width - Kirigami.Units.gridUnit * 4
         visible: full.applet.loaded && !full.st
         iconName: "audio-headphones"
-        text: i18n("OpenPods läuft nicht")
+        text: i18n("OpenPods is not running")
         helpfulAction: QQC2.Action {
-            text: i18n("OpenPods starten")
+            text: i18n("Start OpenPods")
             icon.name: "media-playback-start"
             onTriggered: full.applet.startOpenPods()
         }
@@ -67,7 +67,7 @@ PlasmaExtras.Representation {
                     PlasmaExtras.Heading {
                         Layout.fillWidth: true
                         level: 3
-                        text: full.device ? full.device.name : i18n("Keine AirPods gekoppelt")
+                        text: full.device ? full.device.name : i18n("No AirPods paired")
                         elide: Text.ElideRight
                     }
                     PlasmaComponents3.Label {
@@ -77,12 +77,12 @@ PlasmaExtras.Representation {
                         text: {
                             if (!full.device) return ""
                             switch (full.device.conn) {
-                            case "connected": return i18n("Verbunden") + (full.device.model ? " · " + full.device.model : "")
+                            case "connected": return i18n("Connected") + (full.device.model ? " · " + full.device.model : "")
                             case "connecting":
-                            case "reconnecting": return i18n("Wird verbunden …")
-                            case "elsewhere": return i18n("Mit anderem Gerät verbunden")
-                            case "attachFailed": return i18n("Steuerung nicht erreichbar – erneut verbinden")
-                            default: return i18n("Nicht verbunden")
+                            case "reconnecting": return i18n("Connecting…")
+                            case "elsewhere": return i18n("Connected to another device")
+                            case "attachFailed": return i18n("Controls unavailable – connect again")
+                            default: return i18n("Not connected")
                             }
                         }
                     }
@@ -90,7 +90,7 @@ PlasmaExtras.Representation {
                 PlasmaComponents3.Button {
                     visible: !!full.device
                     icon.name: full.connected ? "network-disconnect" : "network-connect"
-                    text: full.connected ? i18n("Trennen") : i18n("Verbinden")
+                    text: full.connected ? i18n("Disconnect") : i18n("Connect")
                     enabled: !!full.device && full.device.conn !== "connecting" && full.device.conn !== "reconnecting"
                     onClicked: full.applet.act({ type: full.connected ? "disconnect" : "connect",
                                                  id: full.device.id })
@@ -106,10 +106,10 @@ PlasmaExtras.Representation {
 
                 Repeater {
                     model: [
-                        { key: "left", label: i18n("Links") },
-                        { key: "right", label: i18n("Rechts") },
+                        { key: "left", label: i18n("Left") },
+                        { key: "right", label: i18n("Right") },
                         { key: "case", label: i18n("Case") },
-                        { key: "headphone", label: i18n("Akku") },
+                        { key: "headphone", label: i18n("Battery") },
                     ]
                     delegate: ColumnLayout {
                         id: cell
@@ -152,8 +152,8 @@ PlasmaExtras.Representation {
                 visible: !!full.st && !!full.st.battery && full.st.batterySource !== "live"
                 opacity: 0.6
                 font: Kirigami.Theme.smallFont
-                text: !full.st ? "" : full.st.batterySource === "nearby" ? i18n("Vom Case in der Nähe")
-                    : i18n("Zuletzt gesehen vor %1 min", Math.max(1, Math.round((full.st.batteryAge || 0) / 60)))
+                text: !full.st ? "" : full.st.batterySource === "nearby" ? i18n("From the case nearby")
+                    : i18n("Last seen %1 min ago", Math.max(1, Math.round((full.st.batteryAge || 0) / 60)))
             }
 
             // ---------------------------------------------------------- noise control (slider, like KDE's power profiles)
@@ -167,7 +167,7 @@ PlasmaExtras.Representation {
                     Layout.fillWidth: true
                     level: 5
                     opacity: 0.7
-                    text: i18n("Geräuschkontrolle")
+                    text: i18n("Noise Control")
                 }
                 PlasmaComponents3.Label {
                     font.weight: Font.DemiBold
@@ -247,8 +247,8 @@ PlasmaExtras.Representation {
                             wrapMode: Text.Wrap
                             maximumLineCount: 2
                             font.pointSize: Kirigami.Theme.smallFont.pointSize
-                            text: ({ noiseCancellation: "ANC", adaptive: i18n("Adaptiv"),
-                                     transparency: i18n("Transparenz"), off: i18n("Aus") })[modelData.id] || modelData.label
+                            text: ({ noiseCancellation: "ANC", adaptive: i18n("Adaptive"),
+                                     transparency: i18n("Transparency"), off: i18n("Off") })[modelData.id] || modelData.label
                             opacity: index === modeSlider.current ? 1 : 0.6
                             font.weight: index === modeSlider.current ? Font.DemiBold : Font.Normal
                         }
@@ -260,7 +260,7 @@ PlasmaExtras.Representation {
                     horizontalAlignment: Text.AlignHCenter
                     opacity: 0.6
                     font: Kirigami.Theme.smallFont
-                    text: i18n("Verbinde die AirPods, um den Modus zu ändern")
+                    text: i18n("Connect the AirPods to change the mode")
                 }
             }
 
@@ -276,23 +276,23 @@ PlasmaExtras.Representation {
             }
             SwitchRow {
                 visible: full.connected && full.st.conversation !== null && full.st.conversation !== undefined
-                text: i18n("Gesprächserkennung")
-                subtitle: i18n("Medien leiser, wenn du sprichst")
+                text: i18n("Conversation Awareness")
+                subtitle: i18n("Lowers media when you speak")
                 isOn: !!(full.st && full.st.conversation)
                 onFlip: value => full.applet.act({ type: "setToggle", name: "conversationAwareness", value })
             }
             SwitchRow {
                 visible: full.connected && full.st.earDetection !== null && full.st.earDetection !== undefined
-                text: i18n("Automatische Ohrerkennung")
-                subtitle: i18n("Pausiert, wenn du einen AirPod herausnimmst")
+                text: i18n("Automatic Ear Detection")
+                subtitle: i18n("Pauses when you take out an AirPod")
                 isOn: !!(full.st && full.st.earDetection)
                 onFlip: value => full.applet.act({ type: "setToggle", name: "earDetection", value })
             }
             SwitchRow {
-                text: i18n("HD-Mikrofon")
+                text: i18n("HD Microphone")
                 subtitle: full.st && full.st.mic && full.st.mic.streaming
-                          ? i18n("Aktiv · %1", full.st.mic.recorders.join(", "))
-                          : i18n("AirPods-Mikro in hoher Qualität, Musik bleibt AAC")
+                          ? i18n("Active · %1", full.st.mic.recorders.join(", "))
+                          : i18n("High-quality AirPods mic, music stays AAC")
                 isOn: !!full.prefs.hdMic
                 onFlip: value => full.applet.act({ type: "setPref", key: "hdMic", value })
             }
@@ -304,22 +304,22 @@ PlasmaExtras.Representation {
                 Layout.leftMargin: Kirigami.Units.smallSpacing
                 level: 5
                 opacity: 0.7
-                text: i18n("Allgemein")
+                text: i18n("General")
             }
             SwitchRow {
-                text: i18n("Fenster, wenn AirPods in der Nähe sind")
-                subtitle: i18n("Beim Öffnen des Case")
+                text: i18n("Window when AirPods are nearby")
+                subtitle: i18n("When the case is opened")
                 isOn: !!full.prefs.popup
                 onFlip: value => full.applet.act({ type: "setPref", key: "popup", value })
             }
             SwitchRow {
-                text: i18n("Automatisch verbinden")
-                subtitle: i18n("Sobald die AirPods aus dem Case ins Ohr kommen")
+                text: i18n("Connect automatically")
+                subtitle: i18n("As soon as the AirPods go from the case into your ears")
                 isOn: !!full.prefs.autoConnect
                 onFlip: value => full.applet.act({ type: "setPref", key: "autoConnect", value })
             }
             SwitchRow {
-                text: i18n("Mit Linux starten")
+                text: i18n("Start with Linux")
                 isOn: !!full.prefs.startup
                 onFlip: value => full.applet.act({ type: "setPref", key: "startup", value })
             }
