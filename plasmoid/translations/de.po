@@ -358,3 +358,9 @@ msgstr "im Case"
 
 msgid "in ear"
 msgstr "im Ohr"
+
+msgid "Project page"
+msgstr "Projektseite"
+
+msgid "Close"
+msgstr "Schließen"

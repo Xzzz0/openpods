@@ -114,6 +114,14 @@ PlasmoidItem {
         }
     }
 
+    // "Release Notes": the ASCII toy window (one instance; a second click just raises it)
+    AboutWindow {
+        id: about
+        visible: false
+        version: root.st && root.st.update ? root.st.update.version : ""
+    }
+    function showAbout() { about.show() }
+
     /// asks the full representation to show one of its pages ("general", "airpods", …)
     signal pageRequested(string name)
 

@@ -733,7 +733,7 @@ PlasmaExtras.Representation {
             NavRow {
                 iconName: "documentinfo"
                 text: i18n("Release Notes")
-                onClicked: full.act({ type: "openReleaseNotes" })
+                onClicked: full.applet.showAbout()
             }
             NavRow {
                 iconName: "license"
