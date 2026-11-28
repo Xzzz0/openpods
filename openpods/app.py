@@ -931,6 +931,14 @@ class App:
                "mic": {"streaming": self.hd_mic.streaming, "recorders": self.hd_mic.recorders},
                "update": {"version": VERSION, "available": self._update_available(),
                           "installing": self.update_status == "installing"}}
+        out["update"].update({"auto": bool(self.settings.ui.get("autoUpdate", False)), "status": self.update_status,
+                              "checked": self.update_checked})
+        # every setting of the attached (or first) pair, live when connected, else what OpenPods remembers
+        mac = s.mac if s else (devs[0]["id"] if devs else None)
+        dj = next((self._device_json(d) for d in self._devices() if d.mac == mac), None)
+        if dj:
+            out.update({"caps": dj["caps"], "settings": dj["saved"], "stemModes": dj["stemModes"],
+                        "duckPercent": dj["host"]["duckPercent"]})
         order = ("noiseCancellation", "adaptive", "transparency", "off")  # the slider runs quiet -> open
         if ready:
             p = self._state_parts(s)
@@ -951,7 +959,8 @@ class App:
                         "listeningMode": p["listeningMode"],
                         "modes": modes if st.caps & Caps.LISTENING_MODE else [],
                         "conversation": pod.get("conversationAwareness"),
-                        "earDetection": st.flag(aap.EAR_DETECTION)})
+                        "earDetection": st.flag(aap.EAR_DETECTION),
+                        "caps": p["caps"], "settings": p["settings"], "heartRate": p["heartRate"]})
         else:
             # not connected: modes from what OpenPods remembers about the pair, battery from the case's
             # nearby advert (lid open) or the last value seen while connected
@@ -975,6 +984,13 @@ class App:
                                 "batteryAge": int(time.time() - last[0])})
         return out
 
+    # applet actions handled by _on_main_message (the settings window's handler)
+    APPLET_FORWARD = {"setToggle", "setHeartRate", "setHearingAid", "setMediaAssist", "setMicSide", "setPressSpeed",
+                      "setHoldDuration", "setToneVolume", "setHostSetting", "setStemModes", "checkUpdate",
+                      "setAutoUpdate", "openBluetoothSettings", "reconnect", "cancel", "openReleaseNotes", "openLegal"}
+    APPLET_NEEDS_SESSION = {"setToggle", "setHeartRate", "setHearingAid", "setMediaAssist", "setMicSide",
+                            "setPressSpeed", "setHoldDuration", "setToneVolume"}
+
     def _applet_do(self, m):
         t = m.get("type")
         s = self.session
@@ -995,9 +1011,12 @@ class App:
                 return {"error": "unknown pref"}
         elif t == "setListeningMode" and s and m.get("mode") in LISTENING_MODES.values():
             s.set_listening_mode(m["mode"])
-        elif t == "setToggle" and s and m.get("name") in ("conversationAwareness", "earDetection"):
-            (s.set_conversation_awareness if m["name"] == "conversationAwareness" else s.set_ear_detection)(
-                bool(m.get("value")))
+        elif t in self.APPLET_FORWARD:
+            if t in self.APPLET_NEEDS_SESSION and not s:
+                return {"error": "not connected"}
+            if t == "setToggle":
+                m = {**m, "value": bool(m.get("value"))}
+            self._on_main_message(m)  # same handler as the settings window, one place for the logic
         elif t == "connect":
             self.connect(m.get("id") or (self._devices()[0].mac if self._devices() else None))
         elif t == "disconnect":
