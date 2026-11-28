@@ -34,7 +34,7 @@
 
 ### Task 2: ascii.js
 **Files:** Create `plasmoid/org.openpods.applet/contents/ui/ascii.js`; Test `tools/applet-tests/ascii.test.mjs`
-**Produces:** `RAMP`, `glyphRows(ch) -> string[]` (5x7 block font for A–Z, 0–9, ".", "-", fallback box), `caseSprite(angle, lid) -> cells`, `podSprite(angle, side) -> cells`; cell = `{dx, dy, ch, shade}` relative to body centre in grid cells, shade 0..1.
+**Produces:** `RAMP`, `glyphRows(ch) -> string[]` (5x7 block font A–Z, 0–9, ".", "-", fallback box), samplers `caseSampler(body, lidOpen)`, `podSampler(body, side)`, `glyphSampler(body, ch)` (each `(lx, ly) -> shade 0..1 or -1`, lit with the body angle), `rasterize(body, cellW, cellH, sampler) -> [{col,row,ch,shade}]` – characters stay upright on the grid, only the shape rotates.
 - [ ] Tests: every char of "OPENPODS" and "0123456789.-" has 7 rows of width 5; unknown char → box; case sprite non-empty, wider than tall, lid open adds cells above; pod sprite has a stem (cells below bud); all `ch` in RAMP.
 - [ ] Implement: 3D shapes sampled (rounded box for case + hinged lid, sphere+capsule for pod), rotated by angle about z and a fixed tilt, Lambert shading with light (-0.45,-0.75,0.9), z-buffer per cell, shade → RAMP index.
 - [ ] node test PASS; commit.
