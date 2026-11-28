@@ -16,8 +16,9 @@ plus a USB/IP trick, OpenPods speaks the AirPods protocol (AAP) directly over Bl
 - **HD microphone**: Apple's AAC-ELD mic stream (64 kHz) over AAP instead of HFP – music stays in AAC quality;
   virtual source "AirPods Mic (HD)" (libfdk-aac)
 - Keeps the AirPods on A2DP/AAC (no muffled HFP mono sound after a handoff), robust connecting with retries
-- **KDE Plasma applet** in the system tray (like KDE Connect/Vaults): battery, listening-mode slider, switches;
-  notification on low battery
+- **KDE Plasma applet** in the system tray (like KDE Connect/Vaults) with **every setting**: battery, listening-mode
+  slider, and pages for AirPods features, press and hold (stem modes, press speed, hold duration, tone volume),
+  microphone, hearing & health, and general settings/updates; notification on low battery
 - Material 3 Expressive UI, 45 languages, light/dark/auto
 
 Not ported (Windows-specific): stereo mic trick, mic modes/AI noise suppression, mixer, low latency, HD voice,

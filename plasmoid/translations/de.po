@@ -96,8 +96,6 @@ msgstr "Nicht verbunden"
 msgid "Off"
 msgstr "Aus"
 
-msgid "Open OpenPods"
-msgstr "OpenPods öffnen"
 
 msgid "OpenPods is not running"
 msgstr "OpenPods läuft nicht"
@@ -111,8 +109,6 @@ msgstr "R"
 msgid "Right"
 msgstr "Rechts"
 
-msgid "Set up OpenPods…"
-msgstr "OpenPods einrichten …"
 
 msgid "Start OpenPods"
 msgstr "OpenPods starten"
@@ -137,3 +133,228 @@ msgstr "OpenPods %1 ist verfügbar"
 
 msgid "Update"
 msgstr "Aktualisieren"
+
+msgid "%1 BPM"
+msgstr "%1 BPM"
+
+msgid "Adds “Off” to the noise control modes"
+msgstr "Fügt „Aus“ zu den Geräuschkontroll-Modi hinzu"
+
+msgid "Adjusts media volume to your surroundings"
+msgstr "Passt die Medienlautstärke an die Umgebung an"
+
+msgid "Allow “Off” Mode"
+msgstr "Modus „Aus“ erlauben"
+
+msgid "Apple's high-quality mic stream. Music keeps playing in AAC instead of switching to the headset profile."
+msgstr "Apples hochwertiger Mikro-Stream. Musik läuft weiter in AAC, statt ins Headset-Profil zu wechseln."
+
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Bluetooth Settings"
+msgstr "Bluetooth-Einstellungen"
+
+msgid "Check now"
+msgstr "Jetzt prüfen"
+
+msgid "Clinical-grade hearing assistance"
+msgstr "Hörhilfe in klinischer Qualität"
+
+msgid "Configure OpenPods…"
+msgstr "OpenPods einrichten …"
+
+msgid "Connect the AirPods to change these settings."
+msgstr "Verbinde die AirPods, um diese Einstellungen zu ändern."
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "Ear detection, volume, noise control"
+msgstr "Ohrerkennung, Lautstärke, Geräuschkontrolle"
+
+msgid "GPL-3.0 · based on WPods"
+msgstr "GPL-3.0 · basiert auf WPods"
+
+msgid "HD microphone off"
+msgstr "HD-Mikrofon aus"
+
+msgid "HD microphone on"
+msgstr "HD-Mikrofon an"
+
+msgid "Health"
+msgstr "Gesundheit"
+
+msgid "Hearing & Health"
+msgstr "Hören & Gesundheit"
+
+msgid "Hearing Aid"
+msgstr "Hörhilfe"
+
+msgid "Hearing assistance, heart rate"
+msgstr "Hörhilfe, Herzfrequenz"
+
+msgid "Heart Rate"
+msgstr "Herzfrequenz"
+
+msgid "How fast you press twice or three times"
+msgstr "Wie schnell du zwei- oder dreimal drückst"
+
+msgid "In use by %1"
+msgstr "Wird genutzt von %1"
+
+msgid "Installs new versions when OpenPods starts"
+msgstr "Installiert neue Versionen beim Start von OpenPods"
+
+msgid "Keeps noise control on when only one AirPod is in"
+msgstr "Geräuschkontrolle auch mit nur einem AirPod im Ohr"
+
+msgid "Left AirPod"
+msgstr "Linker AirPod"
+
+msgid "License"
+msgstr "Lizenz"
+
+msgid "Lower other audio during calls"
+msgstr "Andere Töne bei Anrufen leiser"
+
+msgid "Lowers media and lets voices in when you start speaking"
+msgstr "Macht Medien leiser und lässt Stimmen durch, sobald du sprichst"
+
+msgid "Measures your heart rate while you wear them"
+msgstr "Misst deine Herzfrequenz, während du sie trägst"
+
+msgid "Media Assist"
+msgstr "Medienunterstützung"
+
+msgid "Microphone"
+msgstr "Mikrofon"
+
+msgid "Microphone side"
+msgstr "Mikrofonseite"
+
+msgid "More"
+msgstr "Mehr"
+
+msgid "Music and video"
+msgstr "Musik und Video"
+
+msgid "Noise Cancellation"
+msgstr "Geräuschunterdrückung"
+
+msgid "Noise Cancellation with One AirPod"
+msgstr "Geräuschunterdrückung mit einem AirPod"
+
+msgid "Open the case next to the PC, hold the button on the back until the light flashes white, then pair them in the Bluetooth settings."
+msgstr "Öffne das Case neben dem PC, halte die Taste hinten, bis das Licht weiß blinkt, und kopple sie dann in den Bluetooth-Einstellungen."
+
+msgid "OpenPods runs in the background, this applet is its interface"
+msgstr "OpenPods läuft im Hintergrund, dieses Applet ist die Oberfläche"
+
+msgid "Pair new AirPods"
+msgstr "Neue AirPods koppeln"
+
+msgid "Personalized Volume"
+msgstr "Personalisierte Lautstärke"
+
+msgid "Phone and video calls"
+msgstr "Telefon- und Videoanrufe"
+
+msgid "Press and Hold"
+msgstr "Drücken und Halten"
+
+msgid "Press and hold duration"
+msgstr "Dauer für Drücken und Halten"
+
+msgid "Press and hold the stem to switch between"
+msgstr "Stiel gedrückt halten wechselt zwischen"
+
+msgid "Press speed"
+msgstr "Drückgeschwindigkeit"
+
+msgid "Quick Settings"
+msgstr "Schnelleinstellungen"
+
+msgid "Quit OpenPods"
+msgstr "OpenPods beenden"
+
+msgid "Ready – starts as soon as an app records from “AirPods Mic (HD)”."
+msgstr "Bereit – startet, sobald eine App von „AirPods Mic (HD)“ aufnimmt."
+
+msgid "Release Notes"
+msgstr "Versionshinweise"
+
+msgid "Right AirPod"
+msgstr "Rechter AirPod"
+
+msgid "Set it up once with an iPhone (hearing test) to use it here."
+msgstr "Einmal mit einem iPhone einrichten (Hörtest), dann geht es auch hier."
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Shorter"
+msgstr "Kürzer"
+
+msgid "Shortest"
+msgstr "Am kürzesten"
+
+msgid "Slower"
+msgstr "Langsamer"
+
+msgid "Slowest"
+msgstr "Am langsamsten"
+
+msgid "Startup, notifications, updates"
+msgstr "Autostart, Benachrichtigungen, Updates"
+
+msgid "Stem"
+msgstr "Stiel"
+
+msgid "Stem, press speed, tone volume"
+msgstr "Stiel, Drückgeschwindigkeit, Signaltöne"
+
+msgid "Stops the background service until the next login"
+msgstr "Beendet den Hintergrunddienst bis zur nächsten Anmeldung"
+
+msgid "Tone volume"
+msgstr "Lautstärke der Signaltöne"
+
+msgid "Update automatically"
+msgstr "Automatisch aktualisieren"
+
+msgid "Updates"
+msgstr "Updates"
+
+msgid "Use the microphone of"
+msgstr "Mikrofon verwenden von"
+
+msgid "Uses your hearing profile for calls"
+msgstr "Nutzt dein Hörprofil bei Anrufen"
+
+msgid "Uses your hearing profile for media"
+msgstr "Nutzt dein Hörprofil für Medien"
+
+msgid "Version %1"
+msgstr "Version %1"
+
+msgid "Version %1 · %2 is available"
+msgstr "Version %1 · %2 ist verfügbar"
+
+msgid "Version %1 · checking…"
+msgstr "Version %1 · wird geprüft …"
+
+msgid "Version %1 · up to date"
+msgstr "Version %1 · aktuell"
+
+msgid "Volume of the sounds the AirPods play themselves, e.g. when switching modes."
+msgstr "Lautstärke der Töne, die die AirPods selbst abspielen, z. B. beim Moduswechsel."
+
+msgid "in case"
+msgstr "im Case"
+
+msgid "in ear"
+msgstr "im Ohr"

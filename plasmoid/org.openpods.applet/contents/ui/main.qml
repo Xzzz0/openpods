@@ -114,21 +114,20 @@ PlasmoidItem {
         }
     }
 
-    PlasmaCore.Action {
-        id: openAction
-        text: i18n("Open OpenPods")
-        icon.name: "window-new"
-        onTriggered: root.act({ type: "open" })
-    }
+    /// asks the full representation to show one of its pages ("general", "airpods", …)
+    signal pageRequested(string name)
+
     PlasmaCore.Action {
         id: configureAction
-        text: i18n("Set up OpenPods…")
+        text: i18n("Configure OpenPods…")
         icon.name: "configure"
-        onTriggered: root.act({ type: "open", page: "windows" })
+        onTriggered: {
+            root.expanded = true
+            root.pageRequested("general")
+        }
     }
 
     Component.onCompleted: {
         Plasmoid.setInternalAction("configure", configureAction)
-        Plasmoid.contextualActions = [openAction]
     }
 }
